@@ -13,8 +13,6 @@ namespace TurtleChallenge.Controllers
         [HttpPost("place")]
         public IActionResult Place(int x, int y, Direction direction)
         {
-            if (_turtle == null)
-                return BadRequest("Turtle is not placed on the table.");
 
             if (x < 0 || x >= TABLE_SIZE || y < 0 || y >= TABLE_SIZE)
                 return BadRequest("Invalid placement coordinates.");
@@ -30,7 +28,7 @@ namespace TurtleChallenge.Controllers
         [HttpPost("move")]
         public IActionResult Move()
         {
-            if (_turtle == null)
+            if (_turtle == null || !_turtle.IsPlaced)
                 return BadRequest("Turtle is not placed on the table.");
 
             int newX = _turtle.X, newY = _turtle.Y;
@@ -63,8 +61,8 @@ namespace TurtleChallenge.Controllers
         [HttpPost("left")]
         public IActionResult Left()
         {
-            if (_turtle == null)
-                return BadRequest("Turtle is not placed");
+            if (_turtle == null || !_turtle.IsPlaced)
+                return BadRequest("Turtle is not placed on the table");
 
             _turtle.Facing = (Direction)(((int)_turtle.Facing + 3) % 4);
             return Ok();
@@ -73,8 +71,8 @@ namespace TurtleChallenge.Controllers
         [HttpPost("right")]
         public IActionResult Right()
         {
-            if (_turtle == null)
-                return BadRequest("Turtle is not placed");
+            if (_turtle == null || !_turtle.IsPlaced)
+                return BadRequest("Turtle is not placed on the table");
 
             _turtle.Facing = (Direction)(((int)_turtle.Facing + 1) % 4);
             return Ok();
@@ -83,8 +81,8 @@ namespace TurtleChallenge.Controllers
         [HttpGet("report")]
         public IActionResult Report()
         {
-            if (_turtle == null)
-                return BadRequest("Turtle is not placed");
+            if (_turtle == null || !_turtle.IsPlaced)
+                return BadRequest("Turtle is not placed on the table");
 
             return Ok(new { _turtle.X, _turtle.Y, Facing = _turtle.Facing.ToString() });
         }
